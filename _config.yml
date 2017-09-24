@@ -26,3 +26,5 @@ github:
 # Gems
 plugins: [jekyll-paginate]
 
+# Google Analytics
+google_analytics: UA-106875411-1
