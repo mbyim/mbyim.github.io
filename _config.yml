@@ -1,0 +1,28 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            mbyim
+tagline:          ''
+description:      'data / thoughts / mbyim@bu.edu'
+url:              
+
+author:
+  name:           'Martin Yim'
+  url:            
+
+paginate:         5
+
+# Custom vars
+version:          2.0.0
+
+github:
+  repo:           https://github.com/poole/lanyon
+
+# Gems
+plugins: [jekyll-paginate]
+
