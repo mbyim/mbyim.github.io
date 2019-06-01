@@ -2,35 +2,18 @@
 layout: default
 ---
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <div class="post">
-    <h1 class="post-title">
-      <a href="{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
 
-    {{ post.content }}
-  </div>
+<p> I'm data analyst whose skill set at the moment is probably best described as "analytics engineer".</p>
+<p> You can find my resume <a href="{{ "/pdf/martin_yim_resume_2019.pdf" | absolute_url }}" target="_blank">here</a> and you can reach me at martin dot byim at gmail dot com.</p>
+
+<br/>
+
+<!-- <p> Thoughts: </p> -->
+<ul>
+  {% for post in site.posts %}
+    <li>  
+      <a href="{{ post.url }}">{{ post.title }}</a> - {{ post.date | date_to_string }}
+    </li>
   {% endfor %}
-</div>
-
-<!-- <div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="/page{{paginator.next_page}}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    {% if paginator.page == 2 %}
-      <a class="pagination-item newer" href="/">Newer</a>
-    {% else %}
-      <a class="pagination-item newer" href="/page{{paginator.previous_page}}">Newer</a>
-    {% endif %}
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div> -->
+</ul>
