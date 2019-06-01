@@ -8,8 +8,9 @@ permalink:        pretty
 # Setup
 title:            mbyim
 tagline:          ''
-description:      'data / thoughts / mbyim@bu.edu'
-url:              
+description:      ''
+url:
+
 
 author:
   name:           'Martin Yim'
@@ -20,8 +21,8 @@ paginate:         5
 # Custom vars
 version:          2.0.0
 
-github:
-  repo:           https://github.com/poole/lanyon
+#github:
+#  repo:           https://github.com/poole/lanyon
 
 # Gems
 plugins: [jekyll-paginate]
