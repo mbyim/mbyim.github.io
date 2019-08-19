@@ -13,6 +13,12 @@
   background-color: black;
 }
 
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 p {
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-style: normal;
