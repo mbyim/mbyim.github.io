@@ -5,6 +5,6 @@ author: ""
 permalink: /about/
 ---
 
-I'm data analyst whose skill set at the moment is probably best described as "analytics engineer".
+I'm data analyst with broad experience up and down the data stack.
 
-You can reach me at martin dot byim at gmail dot com.
+You can reach me at martin.byim@gmail.com.
