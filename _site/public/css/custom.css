@@ -56,6 +56,9 @@ ul {
   padding: 0;
 }
 
+img {
+  max-width:100%;
+}
 
 body {
     display: block;
@@ -66,7 +69,6 @@ body {
     font-family: "PT Sans", Helvetica, Arial, sans-serif;
     font-style: normal;
     font-size: 0.75rem;
-
-
 }
+
 
