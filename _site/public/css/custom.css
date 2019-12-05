@@ -19,10 +19,45 @@
   flex-wrap: wrap;
 }
 
+.left-item {
+  width: 58%;
+  margin-bottom: 2%;
+}
+
+.right-item {
+  width: 38%;
+  margin-bottom: 2%;
+}
+
+.post-div {
+  width: 75%;
+  margin-bottom: 2%; 
+} 
+
 p {
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-style: normal;
   font-size: 0.75rem;
+}
+
+.default-text-style {
+  font-family: "PT Sans", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-size: 0.75rem;
+}
+
+.list {
+  list-style-type: none;
+}
+
+
+ul {
+  margin: 0; 
+  padding: 0;
+}
+
+img {
+  max-width:100%;
 }
 
 body {
@@ -31,9 +66,9 @@ body {
     margin-right: 20px;
     margin-bottom: 8px;
     margin-left: 20px;
+    font-family: "PT Sans", Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 0.75rem;
 }
-/*body {
-  margin: 5px 200px 200px 0px;
-  padding:0;
-}*/
+
 
