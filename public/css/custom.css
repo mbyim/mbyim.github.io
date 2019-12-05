@@ -29,6 +29,11 @@
   margin-bottom: 2%;
 }
 
+.post-div {
+  width: 75%;
+  margin-bottom: 2%; 
+} 
+
 p {
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-style: normal;
