@@ -20,13 +20,13 @@ For small groups, intergroup conflict can increase asabiya as people need to ban
 
 ### The Model
 
-The model is predicated on a straightforward set of equations that dictate how values change over the discrete time of the model. The model presumes a matrix of cells ("patches") where each cell is essentially a regional polity - either as part of the "non-imperial hinterland" or as a piece of an empire. Each cell (regional polity) takes on a regional asabiya, and an imperial asabiya (for hinterland regions I set these two variables to be the same value). In addition, each cell is assigned an imperial index (0 for hinterland, and some integer for a cell belonging to an empire). I also gave a unique color for each imperial index. Likewise, cells are also assigned some other variables used for calculations, such as the imperial "center of gravity", average imperial asabiya, and number of regions constituting each empire.
+The model is predicated on a straightforward set of equations that dictate how values change over the discrete time of the model. We presume a matrix of cells ("patches") where each cell is essentially a regional polity - either as part of the "non-imperial hinterland" or as a piece of an empire. Each cell (regional polity) takes on a regional asabiya, and an imperial asabiya (for hinterland regions I set these two variables to be the same value). In addition, each cell is assigned an imperial index (0 for hinterland, and some integer for a cell belonging to an empire). I also gave a unique color for each imperial index. Likewise, cells are also assigned some other variables used for calculations, such as the imperial "center of gravity", average imperial asabiya, and number of regions constituting each empire.
 
 The regional (cell) asabiya value over time steps ("ticks" in NetLogo) are determined as follows. If the region has a neighbor (not including diagonally adjacent cells) which is of a different imperial index, then asabiya increases in accordance with the following formula:
 
 <img src="https://latex.codecogs.com/png.latex?S_{x,y,t+1}=S_{x,y,t}+r_0S_{x,y,t}(1-S_{x,y,t}) " />
 
-Here, r_0 signifies some defined parameter. Indices x, y, and t represent x and y coordinates of the cell in the matrix and the time t in ticks, respectively. In the other case - if the region in question is neighbors only with cells of the same imperial index - asabiya decreases according to the following formula:
+Here, r_0 signifies some defined parameter. Indices x, y, and t represent x and y coordinates of the cell in the matrix and the time t in ticks, respectively. In the other case, if the region in question is neighbors only with cells of the same imperial index, asabiya decreases according to the following formula:
 
 <img src="https://latex.codecogs.com/png.latex?S_{x,y,t+1}=S_{x,y,t}-$\delta$S_{x,y,t}" />
 
@@ -42,22 +42,68 @@ Here, A signifies number of regions an empire i controls at time step, t. We wil
 
 <img src="https://latex.codecogs.com/png.latex?P_{x,y,t}={A_{i,t}}\bar{S}_{i,t}\exp\[-d_{i,x,t}/h]" />
 
-d here represents the distance between the cell in question and the average of the x and y coordinates of the empire. This "average" location is the center of gravity of the empire. h signifies how well imperial power travels over distance. The significance here is that as distance between the imperial center of gravity and the regional cell grows larger, it mitigates the power the cell. Likewise, modulating h affects how much distance plays a role in the Power calculation. A cell wins an attack and takes over the defending cell (change of imperial index) when the following is true:
+d here represents the distance between the cell in question and the average of the x and y coordinates of the empire's cells. This average location is the "center of gravity" of the empire. h signifies how well imperial power travels over distance. The significance here is that as distance between the imperial center of gravity and the regional cell grows larger, it mitigates the power the cell. Likewise, modulating h affects how much distance plays a role in the polity power calculation. Next, a cell wins an attack and takes over the defending cell (change of imperial index) when the following is true:
 
 <img src="https://latex.codecogs.com/png.latex?P_{att}-P_{def}\textgreater{\Delta}_{p}" />
 
-Delta_p here denotes a parameter for power differential necessary to declare an attack successful.
+Delta_p denotes a parameter for power differential necessary to declare an attack successful.
 
-Finally, at the end of a time step, we calculate whehter an empire collapses due to falling below a critical imperial asabiya threshold. If this occurs, the empire's cells are set to change to non-imperial hinderland.
+Finally, at the end of a time step, we calculate whether an empire collapses due to falling below a critical imperial asabiya threshold. If this occurs, the empire's cells are changed to be non-imperial hinterland.
 
 <img src="https://latex.codecogs.com/png.latex?\bar{S}_{i,t}\textgreater S_{crit}" />
 
 ### The Implementation 
-After implementing this in NetLogo, I saw some of the following patterns (and places where my implementation might have deviated in important ways). One important difference I should note is the beginning. I do as Turchin specifies in starting out with a set of four neighboring polities which comprise of the first empire, but in many cases, it is immediately destroyed as in my implementation. As I noted above, I believe this is because I am currently not initializing all hinterland region with 0 asabiyah from the beginning, but randomizing such that they will in fact immediately begin to conquer each other. Nevertheless, you can see an interesting consolidation stage where a handful of empires make it out of the initial chaos alive.
+After implementing this in NetLogo, I saw many of the dynamics Turchin noted, as well as instances where my implementation might have deviated in important ways. One important difference I should note is the beginning. I do as Turchin specifies in starting out with a set of four neighboring polities which comprise of the first empire, but in many cases, it is immediately destroyed as in my implementation. As I noted above, I believe this is because I am currently not initializing all hinterland region with 0 asabiyah from the beginning but randomizing their asabiyah such that they will in fact immediately begin to conquer each other. As a result you can see an initial cambrian explosion of small empires and a subsequent consolidation stage where a handful of empires make it out of the initial chaos alive.
+
+To begin with, each NetLogo model requires two procedures: a `setup` procedure and a `go` procedure, which initialize and execute the model. Below is the code for the `go` procedure.
+
+```
+;Algorithm for time steps
+to go
+  let empires (remove-duplicates [imperialindex] of turtles)
+
+  update-asabiya
+
+  ask turtles [
+    calculate-imperial-asabiya
+    calculate-imperial-num-regions-controlled
+    calculate-imperial-center
+    calculate-turtle-power
+  ]
+
+  ;attacks
+  decide-attack
+
+  ;at end of each time period, check for imperial collapse
+  calc-imperial-collapse
+
+  tick
+end
+```
+
+In this `go` procedure we see that we can execute procedures such as `update-asabiya` as well as other commands. The `ask turtles` command here is a function `ask` which takes two arguments: a) an agent or agentset (turtles) and b) a list of commands. `let` here is allowing us to define a local variable that will be recalculated each timestep and is used in another computation in this `go` procedure. `tick` is updating the model to start the next discrete time block. 
+
+Notice that I don't do all of the procedures in one `ask turtles` command. The `ask turtles` command works by going through the `agentset` - turtles (a cell/polity) in this case - and running all commands in the command list, one by one - not concurrently. With update-asabiya, for example, I want to calculate regional asabiya for all turtles **before** any turtle does any other actions or calculations in the timestep because some of them use the updated regional asabiya. Therefore I isolate that computation in its own `ask turtles` block and procedure, seen here:
+
+
+```
+to update-asabiya
+ask turtles [
+  ifelse any? ( turtles-on neighbors4 ) with [ imperialindex = 0 or imperialindex != [imperialindex] of myself ]
+  ;let tminusoneasabiya asabiya
+  ; Sx,y,t+1 = Sx,y,t + r0Sx,y,t(1-Sx,y,t)
+  [ set asabiya (asabiya + r-o * asabiya * (1 - asabiya) ) ]
+  ; Sx,y,t+1 = Sx,y,t - dSx,y,t
+  [ set asabiya (asabiya - delta * asabiya ) ]
+  ]
+end
+```
+
+Much of the NetLogo code looks more or less like the above - procedures defining computations against certain agentsets, moving forward in time, setting variables, etc. Now, if we run the model, we can see the initial growth and then consolidation of polities (which is likely not how Turchin's model in the beginning stages would look, if followed to the tee.
 
 ![Beginnings](/assets/first_phase.gif)
 
-Once there is a more conslidated set of polities - while still having significant evolution - we can see a great example of a new state appearing at the intersection of some frontiers and exploding outwards. On the right hand side, the light purple empire emerges out of the frontier region between two other large empires. Ethnogenesis in action.
+Once there is a more conslidated set of polities - while still having significant evolution - we can see a great example of a new state appearing at the intersection of some frontiers and expanding. On the right, the light purple empire emerges out of the frontier region between two other large empires. Ethnogenesis in action.
 
 ![Ethnogenesis](/assets/ethnogenesis.gif)
 
@@ -65,7 +111,7 @@ Finally, we can witness some empire collpase when a few empires' collective impe
 
 ![Empire Collapse](/assets/collapse.gif)
 
-I also made some graphs showing polity size and imperial asabiyah over time. As expected, as time goes on and the surviving empires become larger regions, the imperial asabiya descreases due to the low asabiya of the central regions of said empires. Likewise, we can see the average size of the polities increase over time in this first cycle, at least.
+I also made some graphs showing polity size and imperial asabiya over time. As expected, as time goes on and the surviving empires become larger regions, the imperial asabiya descreases due to the low asabiya of the central regions of said empires. Likewise, we can see the average size of the polities increase over time in this first cycle, at least.
 
 ![NetLogo Graphing](/assets/netlogo_graphing.png)
 
