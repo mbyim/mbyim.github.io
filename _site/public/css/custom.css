@@ -30,7 +30,7 @@
 }
 
 .post-div {
-  width: 75%;
+  width: 60%;
   margin-bottom: 2%; 
 } 
 
@@ -71,4 +71,8 @@ body {
     font-size: 0.75rem;
 }
 
-
+@media only screen and (max-width: 600px) {
+  .post-div {
+    width: 95%; 
+  }
+}
