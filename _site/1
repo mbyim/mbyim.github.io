@@ -43,7 +43,7 @@
 <meta property="og:url" content="http://localhost:4000/1" />
 <meta property="og:site_name" content="mbyim" />
 <script type="application/ld+json">
-{"@type":"WebPage","url":"http://localhost:4000/1","headline":"mbyim","author":{"@type":"Person","name":"Martin Yim"},"@context":"http://schema.org"}</script>
+{"@type":"WebPage","headline":"mbyim","url":"http://localhost:4000/1","author":{"@type":"Person","name":"Martin Yim"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 </head>

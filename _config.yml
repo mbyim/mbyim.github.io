@@ -9,7 +9,7 @@ permalink:        pretty
 title:            mbyim
 tagline:          ''
 description:      ''
-url:
+url: http://mbyim.com
 
 
 author:
@@ -25,7 +25,7 @@ version:          2.0.0
 #  repo:           https://github.com/poole/lanyon
 
 # Gems
-plugins: [jekyll-paginate, jekyll-seo-tag]
+plugins: [jekyll-paginate, jekyll-seo-tag, jekyll-sitemap]
 
 # Google Analytics
 google_analytics: UA-146812223-1
