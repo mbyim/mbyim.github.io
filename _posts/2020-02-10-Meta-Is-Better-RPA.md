@@ -12,7 +12,7 @@ RPA is living up to its promise because it is a <em>metainterface</em>: it creat
 
 Changing cost curves for automating processes means changing the firm’s internal dynamics. By using programming-by-demonstration and drag-and-drop paradigms in tools like “UiPath Studio”, making RPA workflows becomes a cross between using an Adobe product and more raw forms of programming like VBA and Python. Tools designed like UiPath Studio enable non- or semi- technical users to transition into RPA development much more quickly than if they were to attempt to transition into software engineers, which in turn, means that companies can quickly adopt RPA internally via some training and deployment and begin reaping benefits rapidly. Additionally, RPA is often even leveraged to offload work from engineering departments where development time can be highly valued as a means of delivering on the core value proposition of a software product. Instead of having scarce engineering resources expended helping to create some internal tooling, often RPA can be an alternative solution which can be quickly and cheaply (in terms of firm resources) developed and deployed.
 
-
+In essence: RPA changes the calculation of what processes are worthy of consideration for automation because it enables interoperability between systems with lower costs.
 
 ![Histogram of Business Process Automation Reward/Cost Ratio](/assets/rpa.png)
 

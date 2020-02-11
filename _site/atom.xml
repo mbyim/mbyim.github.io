@@ -4,7 +4,7 @@
  <title>mbyim</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-02-10T18:58:33-05:00</updated>
+ <updated>2020-02-10T19:06:55-05:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Martin Yim</name>
@@ -24,6 +24,8 @@
 &lt;p&gt;RPA is living up to its promise because it is a &lt;em&gt;metainterface&lt;/em&gt;: it creates new opportunity for automation through increasing interoperability of systems. Software is now old enough as an industry tool that clunky out-dated legacy systems and external systems without good application programming interfaces lurk in the spines of many a organization, creating procedural and operational drag in a variety of firm functions. Legacy systems or external systems that don’t have welcoming API’s with which to conduct scalable operations make for higher cost curves to what automation opportunities are available, limiting what is actually worth automating. As a result, it is difficult or expensive to automate processes in settings where not all (or any) pieces of the flow are using software applications with APIs. A manual process may start from legacy software with only a GUI, to another application with an API available if needed, and back to GUI-only legacy. Meta is better. By making an interface for your interfaces – effectively by making all interfaces programmable – RPA enables proper automation for procedures that would have been unfeasible, cumbersome, or too costly to perform before.&lt;/p&gt;
 
 &lt;p&gt;Changing cost curves for automating processes means changing the firm’s internal dynamics. By using programming-by-demonstration and drag-and-drop paradigms in tools like “UiPath Studio”, making RPA workflows becomes a cross between using an Adobe product and more raw forms of programming like VBA and Python. Tools designed like UiPath Studio enable non- or semi- technical users to transition into RPA development much more quickly than if they were to attempt to transition into software engineers, which in turn, means that companies can quickly adopt RPA internally via some training and deployment and begin reaping benefits rapidly. Additionally, RPA is often even leveraged to offload work from engineering departments where development time can be highly valued as a means of delivering on the core value proposition of a software product. Instead of having scarce engineering resources expended helping to create some internal tooling, often RPA can be an alternative solution which can be quickly and cheaply (in terms of firm resources) developed and deployed.&lt;/p&gt;
+
+&lt;p&gt;In essence: RPA changes the calculation of what processes are worthy of consideration for automation because it enables interoperability between systems with lower costs.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/rpa.png&quot; alt=&quot;Histogram of Business Process Automation Reward/Cost Ratio&quot; /&gt;&lt;/p&gt;
 
