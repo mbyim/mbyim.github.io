@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>mbyim</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <link href="http://localhost:4000/"/>
- <updated>2020-02-10T19:06:55-05:00</updated>
- <id>http://localhost:4000</id>
+ <link href="http://mbyim.com/atom.xml" rel="self"/>
+ <link href="http://mbyim.com/"/>
+ <updated>2024-01-11T22:29:33-05:00</updated>
+ <id>http://mbyim.com</id>
  <author>
    <name>Martin Yim</name>
    <email></email>
@@ -13,10 +13,160 @@
 
  
  <entry>
+   <title>Synthetic Control with Goodreads and the Financial Times</title>
+   <link href="http://mbyim.com/2024/01/11/Synthetic-Control-Goodreads-FT/"/>
+   <updated>2024-01-11T00:00:00-05:00</updated>
+   <id>http://mbyim.com/2024/01/11/Synthetic-Control-Goodreads-FT</id>
+   <content type="html">&lt;p&gt;Every year, various outlets put out &quot;Best of Year&quot; articles for
+various things. In this case, the &lt;em&gt;Financial Times&lt;/em&gt; put out &lt;a href=&quot;https://www.ft.com/booksof2023&quot;&gt;Best Books
+of 2023&lt;/a&gt;, for several
+subjects. I was curious what the effect would be on book sales –
+especially because some of these books are more academic or obscure on
+the whole. I don&apos;t have access to book sales data, but Goodreads does
+have statistics on when people &quot;add&quot; books to their &quot;shelves&quot;. Using
+this publically available Goodreads data as a proxy for interest and
+marketing effectiveness, we can try to estimate if the &lt;em&gt;Financial Times&lt;/em&gt;
+series had a significant effect on interest in the books featured (and
+thus, presumably also book sales).&lt;/p&gt;
+
+&lt;p&gt;I made a few assumptions and caveats in this quick analysis. One
+assumption was that two different goodreads action statistics could be
+additive (&quot;added&quot; and &quot;to-read&quot;). Another was that I could try to
+use the other books of authors&apos; whose books were featured in the &lt;em&gt;Best
+Of&lt;/em&gt; series as a donor pool to create synthetic controls. Strong spikes
+for different books at different times outside of the &lt;em&gt;FT Best Of&lt;/em&gt;
+publication dates I assume to be other, &quot;exogenous&quot;
+marketing/publicity efforts. Lastly, while the &lt;em&gt;FT Best Of&lt;/em&gt; series
+contained many subject list &lt;em&gt;Best Of&lt;/em&gt;s, I scoped the analysis to
+Economics, History, and Politics, for ease and to restrict my
+web-scraping volume.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Regarding methodology, I chose &lt;a href=&quot;https://en.wikipedia.org/wiki/Synthetic_control_method&quot;&gt;synthetic
+control&lt;/a&gt;
+to try to estimate the effect. The gist of synthetic control is to
+construct a counterfactual from donor units which then allows us to peer
+into the un-seen, untreated outcomes of our treated units. It does this
+using regression to find the weights which then are applied to the donor
+units to properly mimic the treated unit&apos;s would-have-been future. The
+method is fairly recent and gaining traction in the social science
+literature.&lt;/p&gt;
+
+&lt;p&gt;There are a few reasons I chose synthetic control over other possible
+methods. First, marketing mix models would be one possibility but they
+are generally done internally where all marketing decision data is
+available because they are effective when one has access to the full
+data on marketing efforts – how &quot;strong&quot; those efforts were in dollar
+terms, when they started and stopped, etc – which we don&apos;t have.
+Second, after doing some reading on regression discontinuity in time, I
+decided it had issues that were better addressed by synthetic control.
+Synthetic control would better be able to deal with time-varying
+unobservable variables. As said in &lt;a href=&quot;https://www.nber.org/system/files/working_papers/w23602/w23602.pdf&quot;&gt;this
+paper&lt;/a&gt;:
+&quot;RDiT requires assumptions for identification that are often strong and
+inherently untestable.&quot; While my application of synthetic control and
+definition of the donor pool here are imperfect, I prefer it to RDiT –
+and one might even argue that a simple pre-post analysis might also
+suffice for most situations (as they do in the aforementioned paper).
+But we&apos;re just having fun here, and I wanted to see what I could do
+with synthetic control :).&lt;/p&gt;
+
+&lt;p&gt;To view the dataset from above we can use panelView (authored in part by
+the same people who worked on gsynth, which we will introduce in a
+moment). As we can see we have about 40 treated books, and roughly 250
+untreated as our donor pool. We can also see the (slightly) staggered
+treatment. We also have a significant size in terms of panel data,
+covering a little over five months.&lt;br /&gt;
+&lt;br /&gt;
+&lt;img src=&quot;/assets/image3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At first, borrowing heavily from code in &lt;a href=&quot;https://matheusfacure.github.io/python-causality-handbook/15-Synthetic-Control.html&quot;&gt;Causal Inference for the
+Brave and
+True&lt;/a&gt;,
+I created a simple synthetic control model using our treated and
+untreated books. I excluded about 10 books (treated and untreated) which
+had very high pretreatment spikes, as these reflected exogenous
+variation of other marketing efforts and which seemed to be heavily
+biasing the model (see below). Outside of these outliers, I had two main
+difficulties to deal with: one was that I had more than one treated unit
+(about 40 in my case), and the other was that I realized after a bit
+that the &lt;em&gt;Best Of&lt;/em&gt; series was &lt;em&gt;not&lt;/em&gt; all published on one day, so I
+actually had three different treatment periods as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To deal with the issue of multiple treatment units I first attempted to
+create synthetic controls for each treated unit and add the synthetic
+control outcomes together. This model passed the smell test but it felt
+a bit crude; I wanted to see what would happen if I collapsed the
+treatment units into one, with an average. In the second attempt, I
+aggregated the treated books into a single treated unit, and this time I
+came up with a model that passed the smell test. However, after reading
+&lt;a href=&quot;https://stats.stackexchange.com/questions/616939/synthetic-control-method-based-on-several-treated-units&quot;&gt;this stackexchange
+post&lt;/a&gt;,
+I decided to make use of the gsynth package which could help me directly
+address both my problems of multiple treated units and staggered
+treatments with a proper methodology, as opposed to my jerry-rigged
+solutions where I wasn&apos;t even addressing the staggered treatments (only
+staggered one to two days).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The gsynth package implements &lt;a href=&quot;https://www.cambridge.org/core/journals/political-analysis/article/generalized-synthetic-control-method-causal-inference-with-interactive-fixed-effects-models/B63A8BD7C239DD4141C67DA10CD0E4F3&quot;&gt;Generalized Synthetic
+Control&lt;/a&gt;,
+which implements a variation on synthetic control using two way fixed
+effects and a factor loading scheme. Importantly, it is able to
+incorporate multiple treated units and staggered treatments. I should
+note that it does have a trade off of interpretability: where synthetic
+control restricts weights of its constituent donors to add to 1 and be
+positive, generalized synthetic control is calculating factors and also
+does not necessarily constrain them to add to 1 and all take on positive
+values. As said in the paper: &quot;estimated factors may not be directly
+interpretable because they are, at best, linear transformations of the
+true factors...&quot;&lt;/p&gt;
+
+&lt;p&gt;After fitting the gysnth model, we can see that the overall results are
+similar to the averaged out book model I created in python which didn&apos;t
+properly address the multiple treatment unit or staggered treatment.
+However the gsynth model here performs better &lt;em&gt;despite&lt;/em&gt; the fact that I
+did not exclude the outliers I mentioned above, which had severely
+thrown off the original model (see
+below).&lt;img src=&quot;/assets/image2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To give a singular example of the results for a single treatment unit,
+below are three graphs of Branko Milanovic&apos;s new book &lt;a href=&quot;https://www.goodreads.com/book/stats?id=123831773&quot;&gt;&lt;em&gt;[Visions of
+Inequality]{.underline}&lt;/em&gt;&lt;/a&gt;,
+the goodreads data (with a dotted line added for treatment date), the
+actual versus the blue dotted synthetic control, and the gap.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/image4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Critically we can see that the model does not overfit, but also that it
+does seem to be able to isolate the FT effect, even with the (perhaps
+janky) definition of a donor pool that we used in this analysis.
+Eyeballing, it seems as though the ATT really occurs over one to two
+weeks before trailing off into residual noise. Though perhaps a simple
+before-after eye test might have sufficed, I think this is a bit more
+fun, and it was interesting to see how synthetic control would work. You
+can find some of the (messy, quick – please excuse it) webscraping and
+modeling code &lt;a href=&quot;https://github.com/mbyim/goodreads_scraping&quot;&gt;here&lt;/a&gt; if you&apos;re interested.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Meta Is Better: Musings on RPA</title>
-   <link href="http://localhost:4000/2020/02/10/Meta-Is-Better-RPA/"/>
+   <link href="http://mbyim.com/2020/02/10/Meta-Is-Better-RPA/"/>
    <updated>2020-02-10T00:00:00-05:00</updated>
-   <id>http://localhost:4000/2020/02/10/Meta-Is-Better-RPA</id>
+   <id>http://mbyim.com/2020/02/10/Meta-Is-Better-RPA</id>
    <content type="html">&lt;p&gt;&lt;em&gt;“Worse is better” - Ancient Proverb&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;Admittedly, I only heard about RPA recently while browsing around, but it caught my eye. Companies like &lt;a href=&quot;https://www.uipath.com/&quot;&gt;UiPath&lt;/a&gt; have experienced explosive &lt;a href=&quot;https://techcrunch.com/2019/06/24/gartner-finds-rpa-is-fastest-growing-market-in-enterprise-software/&quot;&gt;growth&lt;/a&gt;. And there is reason to believe that the time is ripe for “Robotic Process Automation” solutions. But why now, and what makes this automation the sort that actually happens and isn’t perpetually on the horizon?&lt;/p&gt;
@@ -41,12 +191,12 @@
  
  <entry>
    <title>Implementing Turchin's Metaethnic Frontier Theory With NetLogo</title>
-   <link href="http://localhost:4000/2019/12/03/Metaethnic-Frontier-Implementation/"/>
+   <link href="http://mbyim.com/2019/12/03/Metaethnic-Frontier-Implementation/"/>
    <updated>2019-12-03T00:00:00-05:00</updated>
-   <id>http://localhost:4000/2019/12/03/Metaethnic-Frontier-Implementation</id>
+   <id>http://mbyim.com/2019/12/03/Metaethnic-Frontier-Implementation</id>
    <content type="html">&lt;h3 id=&quot;intro&quot;&gt;Intro&lt;/h3&gt;
 
-&lt;p&gt;Peter Turchin is a Quantitative Biologist turned Quantitative Historian. In his approach to history he attempts to capture historical trends and patterns by leveraging data on expired agrarian societies and even adjusting his theories to attempt to &lt;a href=&quot;https://amzn.to/2rXuoTc&quot;&gt;encompass more modern industrial societies&lt;/a&gt;. Building on work by Jack Goldstone, Professor Turchin has proposed various models to explain “historical dynamics” as part of the study he calls Cliodynamics. In one of his early books on Cliodynamics, &lt;a href=&quot;https://amzn.to/34R8saV&quot;&gt;Historical Dynamics&lt;/a&gt;, Turchin lays out details of varous models he uses to try and understand how societies function and evolve. The Metaethnic Frontier theory is proposed to model the geopolitical dynamics of competing polities, with special attention paid to the sociological concept of Asabiya and several assumptions based on previous work. I decided it would be a fun way to try and learn more about agent-based modeling by implementing in NetLogo, a popular piece of software for Agent-Based modeling and simulation.&lt;/p&gt;
+&lt;p&gt;Peter Turchin is a Quantitative Biologist turned Quantitative Historian. In his approach to history he attempts to capture historical trends and patterns by leveraging data on expired agrarian societies and even adjusting his theories to attempt to &lt;a href=&quot;https://indieocean.io/martin/ages-of-discord&quot;&gt;encompass more modern industrial societies&lt;/a&gt;. Building on work by Jack Goldstone, Professor Turchin has proposed various models to explain “historical dynamics” as part of the study he calls Cliodynamics. In one of his early books on Cliodynamics, &lt;a href=&quot;https://indieocean.io/martin/historical-dynamics&quot;&gt;Historical Dynamics&lt;/a&gt;, Turchin lays out details of varous models he uses to try and understand how societies function and evolve. The Metaethnic Frontier theory is proposed to model the geopolitical dynamics of competing polities, with special attention paid to the sociological concept of Asabiya and several assumptions based on previous work. I decided it would be a fun way to try and learn more about agent-based modeling by implementing in NetLogo, a popular piece of software for Agent-Based modeling and simulation.&lt;/p&gt;
 
 &lt;h3 id=&quot;netlogo&quot;&gt;NetLogo&lt;/h3&gt;
 
@@ -95,9 +245,9 @@
 &lt;h3 id=&quot;the-implementation&quot;&gt;The Implementation&lt;/h3&gt;
 &lt;p&gt;After implementing this in NetLogo, I saw many of the dynamics Turchin noted, as well as instances where my implementation might have deviated in important ways. One important difference I should note is the beginning. I do as Turchin specifies in starting out with a set of four neighboring polities which comprise of the first empire, but in many cases, it is immediately destroyed as in my implementation. As I noted above, I believe this is because I am currently not initializing all hinterland region with 0 asabiyah from the beginning but randomizing their asabiyah such that they will in fact immediately begin to conquer each other. As a result you can see an initial cambrian explosion of small empires and a subsequent consolidation stage where a handful of empires make it out of the initial chaos alive.&lt;/p&gt;
 
-&lt;p&gt;To begin with, each NetLogo model requires two procedures: a &lt;code class=&quot;highlighter-rouge&quot;&gt;setup&lt;/code&gt; procedure and a &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure, which initialize and execute the model. Below is the code for the &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure.&lt;/p&gt;
+&lt;p&gt;To begin with, each NetLogo model requires two procedures: a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setup&lt;/code&gt; procedure and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure, which initialize and execute the model. Below is the code for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;;Algorithm for time steps
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;;Algorithm for time steps
 to go
   let empires (remove-duplicates [imperialindex] of turtles)
 
@@ -120,11 +270,11 @@ to go
 end
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;In this &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure we see that we can execute procedures such as &lt;code class=&quot;highlighter-rouge&quot;&gt;update-asabiya&lt;/code&gt; as well as other commands. The &lt;code class=&quot;highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command here is a function &lt;code class=&quot;highlighter-rouge&quot;&gt;ask&lt;/code&gt; which takes two arguments: a) an agent or agentset (turtles) and b) a list of commands. &lt;code class=&quot;highlighter-rouge&quot;&gt;let&lt;/code&gt; here is allowing us to define a local variable that will be recalculated each timestep and is used in another computation in this &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure. &lt;code class=&quot;highlighter-rouge&quot;&gt;tick&lt;/code&gt; is updating the model to start the next discrete time block.&lt;/p&gt;
+&lt;p&gt;In this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure we see that we can execute procedures such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;update-asabiya&lt;/code&gt; as well as other commands. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command here is a function &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ask&lt;/code&gt; which takes two arguments: a) an agent or agentset (turtles) and b) a list of commands. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;let&lt;/code&gt; here is allowing us to define a local variable that will be recalculated each timestep and is used in another computation in this &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; procedure. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tick&lt;/code&gt; is updating the model to start the next discrete time block.&lt;/p&gt;
 
-&lt;p&gt;Notice that I don’t do all of the procedures in one &lt;code class=&quot;highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command. The &lt;code class=&quot;highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command works by going through the &lt;code class=&quot;highlighter-rouge&quot;&gt;agentset&lt;/code&gt; - turtles (a cell/polity) in this case - and running all commands in the command list, one by one - not concurrently. With update-asabiya, for example, I want to calculate regional asabiya for all turtles &lt;strong&gt;before&lt;/strong&gt; any turtle does any other actions or calculations in the timestep because some of them use the updated regional asabiya. Therefore I isolate that computation in its own &lt;code class=&quot;highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; block and procedure, seen here:&lt;/p&gt;
+&lt;p&gt;Notice that I don’t do all of the procedures in one &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; command works by going through the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;agentset&lt;/code&gt; - turtles (a cell/polity) in this case - and running all commands in the command list, one by one - not concurrently. With update-asabiya, for example, I want to calculate regional asabiya for all turtles &lt;strong&gt;before&lt;/strong&gt; any turtle does any other actions or calculations in the timestep because some of them use the updated regional asabiya. Therefore I isolate that computation in its own &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ask turtles&lt;/code&gt; block and procedure, seen here:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;to update-asabiya
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;to update-asabiya
 ask turtles [
   ifelse any? ( turtles-on neighbors4 ) with [ imperialindex = 0 or imperialindex != [imperialindex] of myself ]
   ;let tminusoneasabiya asabiya

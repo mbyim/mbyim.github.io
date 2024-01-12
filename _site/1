@@ -33,17 +33,20 @@
 
   
   
-  <!-- Begin Jekyll SEO tag v2.5.0 -->
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>mbyim</title>
-<meta name="generator" content="Jekyll v3.8.5" />
+<meta name="generator" content="Jekyll v3.9.3" />
 <meta property="og:title" content="mbyim" />
 <meta name="author" content="Martin Yim" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/1" />
-<meta property="og:url" content="http://localhost:4000/1" />
+<link rel="canonical" href="http://mbyim.com/1" />
+<meta property="og:url" content="http://mbyim.com/1" />
 <meta property="og:site_name" content="mbyim" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="mbyim" />
 <script type="application/ld+json">
-{"@type":"WebPage","url":"http://localhost:4000/1","headline":"mbyim","author":{"@type":"Person","name":"Martin Yim"},"@context":"http://schema.org"}</script>
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Martin Yim"},"headline":"mbyim","url":"http://mbyim.com/1"}</script>
 <!-- End Jekyll SEO tag -->
 
 </head>
@@ -63,7 +66,7 @@
       <div class="flex-container">
         <div class="left-item">
 <p> I'm data analyst with broad experience up and down the data stack.</p>
-<p> You can find my resume <a href="http://localhost:4000/pdf/martin_yim_resume_2019.pdf" target="_blank">here</a>. Find me at: <a href="mailto:martin.byim@gmail.com">martin.byim@gmail.com</a>.</p>
+<p> You can find my resume <a href="http://mbyim.com/pdf/martin_yim_resume_2019.pdf" target="_blank">here</a>. Find me at: <a href="mailto:martin.byim@gmail.com">martin.byim@gmail.com</a>.</p>
 
 <br/>
 </div>
@@ -77,6 +80,10 @@
 <div class="left-item">
 <p>content:</p>
 <ul>
+  
+    <li class="list">  
+      <a href="/2024/01/11/Synthetic-Control-Goodreads-FT/">Synthetic Control with Goodreads and the Financial Times</a> - 11 Jan 2024
+    </li>
   
     <li class="list">  
       <a href="/2020/02/10/Meta-Is-Better-RPA/">Meta Is Better: Musings on RPA</a> - 10 Feb 2020

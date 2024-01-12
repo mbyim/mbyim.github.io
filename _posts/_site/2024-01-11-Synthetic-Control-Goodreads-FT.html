@@ -1,0 +1,142 @@
+<p>Every year, various outlets put out "Best of Year" articles for
+various things. In this case, the <em>Financial Times</em> put out <a href="https://www.ft.com/booksof2023">Best Books
+of 2023</a>, for several
+subjects. I was curious what the effect would be on book sales –
+especially because some of these books are more academic or obscure on
+the whole. I don't have access to book sales data, but Goodreads does
+have statistics on when people "add" books to their "shelves". Using
+this publically available Goodreads data as a proxy for interest and
+marketing effectiveness, we can try to estimate if the <em>Financial Times</em>
+series had a significant effect on interest in the books featured (and
+thus, presumably also book sales).</p>
+
+<p>I made a few assumptions and caveats in this quick analysis. One
+assumption was that two different goodreads action statistics could be
+additive ("added" and "to-read"). Another was that I could try to
+use the other books of authors' whose books were featured in the <em>Best
+Of</em> series as a donor pool to create synthetic controls. Strong spikes
+for different books at different times outside of the <em>FT Best Of</em>
+publication dates I assume to be other, "exogenous"
+marketing/publicity efforts. Lastly, while the <em>FT Best Of</em> series
+contained many subject list <em>Best Of</em>s, I scoped the analysis to
+Economics, History, and Politics, for ease and to restrict my
+web-scraping volume.</p>
+
+<p><img src="/assets/image1.png" alt="" /></p>
+
+<p>Regarding methodology, I chose <a href="https://en.wikipedia.org/wiki/Synthetic_control_method">synthetic
+control</a>
+to try to estimate the effect. The gist of synthetic control is to
+construct a counterfactual from donor units which then allows us to peer
+into the un-seen, untreated outcomes of our treated units. It does this
+using regression to find the weights which then are applied to the donor
+units to properly mimic the treated unit's would-have-been future. The
+method is fairly recent and gaining traction in the social science
+literature.</p>
+
+<p>There are a few reasons I chose synthetic control over other possible
+methods. First, marketing mix models would be one possibility but they
+are generally done internally where all marketing decision data is
+available because they are effective when one has access to the full
+data on marketing efforts – how "strong" those efforts were in dollar
+terms, when they started and stopped, etc – which we don't have.
+Second, after doing some reading on regression discontinuity in time, I
+decided it had issues that were better addressed by synthetic control.
+Synthetic control would better be able to deal with time-varying
+unobservable variables. As said in <a href="https://www.nber.org/system/files/working_papers/w23602/w23602.pdf">this
+paper</a>:
+"RDiT requires assumptions for identification that are often strong and
+inherently untestable." While my application of synthetic control and
+definition of the donor pool here are imperfect, I prefer it to RDiT –
+and one might even argue that a simple pre-post analysis might also
+suffice for most situations (as they do in the aforementioned paper).
+But we're just having fun here, and I wanted to see what I could do
+with synthetic control :).</p>
+
+<p>To view the dataset from above we can use panelView (authored in part by
+the same people who worked on gsynth, which we will introduce in a
+moment). As we can see we have about 40 treated books, and roughly 250
+untreated as our donor pool. We can also see the (slightly) staggered
+treatment. We also have a significant size in terms of panel data,
+covering a little over five months.<br />
+<br />
+<img src="/assets/image3.png" alt="" /></p>
+
+<p>At first, borrowing heavily from code in <a href="https://matheusfacure.github.io/python-causality-handbook/15-Synthetic-Control.html">Causal Inference for the
+Brave and
+True</a>,
+I created a simple synthetic control model using our treated and
+untreated books. I excluded about 10 books (treated and untreated) which
+had very high pretreatment spikes, as these reflected exogenous
+variation of other marketing efforts and which seemed to be heavily
+biasing the model (see below). Outside of these outliers, I had two main
+difficulties to deal with: one was that I had more than one treated unit
+(about 40 in my case), and the other was that I realized after a bit
+that the <em>Best Of</em> series was <em>not</em> all published on one day, so I
+actually had three different treatment periods as well.</p>
+
+<p><img src="/assets/image8.png" alt="" /></p>
+
+<p>To deal with the issue of multiple treatment units I first attempted to
+create synthetic controls for each treated unit and add the synthetic
+control outcomes together. This model passed the smell test but it felt
+a bit crude; I wanted to see what would happen if I collapsed the
+treatment units into one, with an average. In the second attempt, I
+aggregated the treated books into a single treated unit, and this time I
+came up with a model that passed the smell test. However, after reading
+<a href="https://stats.stackexchange.com/questions/616939/synthetic-control-method-based-on-several-treated-units">this stackexchange
+post</a>,
+I decided to make use of the gsynth package which could help me directly
+address both my problems of multiple treated units and staggered
+treatments with a proper methodology, as opposed to my jerry-rigged
+solutions where I wasn't even addressing the staggered treatments (only
+staggered one to two days).</p>
+
+<p><img src="/assets/image9.png" alt="" /></p>
+
+<p><img src="/assets/image5.png" alt="" /></p>
+
+<p><img src="/assets/image10.png" alt="" /></p>
+
+<p>The gsynth package implements <a href="https://www.cambridge.org/core/journals/political-analysis/article/generalized-synthetic-control-method-causal-inference-with-interactive-fixed-effects-models/B63A8BD7C239DD4141C67DA10CD0E4F3">Generalized Synthetic
+Control</a>,
+which implements a variation on synthetic control using two way fixed
+effects and a factor loading scheme. Importantly, it is able to
+incorporate multiple treated units and staggered treatments. I should
+note that it does have a trade off of interpretability: where synthetic
+control restricts weights of its constituent donors to add to 1 and be
+positive, generalized synthetic control is calculating factors and also
+does not necessarily constrain them to add to 1 and all take on positive
+values. As said in the paper: "estimated factors may not be directly
+interpretable because they are, at best, linear transformations of the
+true factors..."</p>
+
+<p>After fitting the gysnth model, we can see that the overall results are
+similar to the averaged out book model I created in python which didn't
+properly address the multiple treatment unit or staggered treatment.
+However the gsynth model here performs better <em>despite</em> the fact that I
+did not exclude the outliers I mentioned above, which had severely
+thrown off the original model (see
+below).<img src="/assets/image2.png" alt="" /></p>
+
+<p>To give a singular example of the results for a single treatment unit,
+below are three graphs of Branko Milanovic's new book <a href="https://www.goodreads.com/book/stats?id=123831773"><em>[Visions of
+Inequality]{.underline}</em></a>,
+the goodreads data (with a dotted line added for treatment date), the
+actual versus the blue dotted synthetic control, and the gap.</p>
+
+<p><img src="/assets/image7.png" alt="" /></p>
+
+<p><img src="/assets/image6.png" alt="" /></p>
+
+<p><img src="/assets/image4.png" alt="" /></p>
+
+<p>Critically we can see that the model does not overfit, but also that it
+does seem to be able to isolate the FT effect, even with the (perhaps
+janky) definition of a donor pool that we used in this analysis.
+Eyeballing, it seems as though the ATT really occurs over one to two
+weeks before trailing off into residual noise. Though perhaps a simple
+before-after eye test might have sufficed, I think this is a bit more
+fun, and it was interesting to see how synthetic control would work. You
+can find some of the (messy, quick – please excuse it) webscraping and
+modeling code <a href="https://github.com/mbyim/goodreads_scraping">here</a> if you're interested.</p>
