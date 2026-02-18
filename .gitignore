@@ -1,0 +1,17 @@
+# Jekyll build output
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Vim swap files
+*.swp
+*.swo
+*.sw[a-z]
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Bundle
+vendor/
