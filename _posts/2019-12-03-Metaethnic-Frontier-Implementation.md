@@ -28,7 +28,7 @@ The regional (cell) asabiya value over time steps ("ticks" in NetLogo) are deter
 
 Here, r_0 signifies some defined parameter. Indices x, y, and t represent x and y coordinates of the cell in the matrix and the time t in ticks, respectively. In the other case, if the region in question is neighbors only with cells of the same imperial index, asabiya decreases according to the following formula:
 
-<img src="https://latex.codecogs.com/png.latex?S_{x,y,t+1}=S_{x,y,t}-$\delta$S_{x,y,t}" />
+<img src="https://latex.codecogs.com/png.latex?S_{x,y,t+1}=S_{x,y,t}-\delta S_{x,y,t}" />
 
 Here, delta signifies some defined parameter/constant. These parameters are set as global variables in the model. 
 
