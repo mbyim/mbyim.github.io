@@ -125,8 +125,7 @@ thrown off the original model (see
 below).![](/assets/image2.png)
 
 To give a singular example of the results for a single treatment unit,
-below are three graphs of Branko Milanovic\'s new book [*[Visions of
-Inequality]{.underline}*](https://www.goodreads.com/book/stats?id=123831773),
+below are three graphs of Branko Milanovic\'s new book [*Visions of Inequality*](https://www.goodreads.com/book/stats?id=123831773),
 the goodreads data (with a dotted line added for treatment date), the
 actual versus the blue dotted synthetic control, and the gap.
 
