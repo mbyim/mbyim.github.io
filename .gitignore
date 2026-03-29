@@ -15,3 +15,18 @@ Thumbs.db
 
 # Bundle
 vendor/
+
+# Android / Gradle
+*.iml
+.gradle/
+local.properties
+.idea/
+*.apk
+*.aab
+*.ap_
+*.dex
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
